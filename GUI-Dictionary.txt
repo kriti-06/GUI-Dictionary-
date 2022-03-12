@@ -1,0 +1,44 @@
+from ast import Lambda
+from re import search
+from tkinter import*
+from typing import final
+from PIL import Image, ImageTk
+import json
+from difflib import get_close_matches
+
+with open('data.json') as data:
+    data_load = json.load(data)
+
+def search_word(word):
+    if word in data_load:
+        meaning_word.delete(1.0,END)
+        meaning_word.config(fg='black')
+        meaning_word.insert(END,data_load[word])
+
+    elif len(get_close_matches(word,data_load.keys()))>0:  
+        meaning_word.config(fg="black")
+        meaning_word.delete(1.0,END)
+        meaning_word.insert(END,"Where you finding{}and meaning is {}".format(get_close_matches(word,data_load.keys())[0],
+        data_load[get_close_matches(word,data_load.keys())[0]]))
+        final=get_close_matches(word,data_load.keys())
+
+
+root =Tk()
+root.title("SAVIOUR DOCTIONARY")
+
+image=Image.open('Image.PNG')
+image_picture=ImageTk.PhotoImage(image)
+dest_pic = Label(root, image=image_picture)
+dest_pic.pack()
+
+a = StringVar()
+word_meaning = Entry(root,textvariable=a,background="dark blue",fg="white",font=('arial',30,"bold"))
+word_meaning.place(relx=.300,rely=0.50,relwidth=.45,relheight= .060)
+
+button1 = Button(root,text ="SEARCH THE WORD", command=lambda :search_word(a.get()),background="red",fg="white",font=('arial',20,"bold"))
+button1.place(relx=.55,rely=.77,relwidth=.30,relheight=.050)
+
+meaning_word = Text(root,background="white",fg="black",font=('arial',25,"bold"))
+meaning_word.place(relx=.200,rely=.05,relwidth=.63,relheight=.16)
+
+root.mainloop( ) 
